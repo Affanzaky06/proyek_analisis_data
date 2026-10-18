@@ -172,6 +172,12 @@ try:
     st.write("Header PNG:", png_data[:8])
 
     st.image(png_data, caption="Tes PNG Matplotlib")
+    st.download_button(
+    label="Unduh tes grafik PNG",
+    data=png_data,
+    file_name="tes_grafik.png",
+    mime="image/png",
+)
 
 except Exception as e:
     st.exception(e)

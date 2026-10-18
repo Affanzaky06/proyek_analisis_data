@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import streamlit as st
+from pathlib import Path
 
 sns.set(style='whitegrid')
 
@@ -59,7 +60,9 @@ def create_segment_df(df, jenis_hari):
 # Load & siapkan data
 @st.cache_data
 def load_data():
-    df = pd.read_csv('main_data.csv', parse_dates=['dteday'])
+    data_path = Path(__file__).resolve().parent / "main_data.csv"
+    df = pd.read_csv(data_path, parse_dates=["dteday"])
+
     df['day_type'] = np.where(df['workingday'] == 1, 'Hari Kerja', 'Akhir Pekan & Libur')
     df['segmen_waktu'] = pd.cut(df['hr'], bins=[-1, 5, 9, 15, 19, 23], labels=LABEL_SEGMEN)
     return df.sort_values(['dteday', 'hr']).reset_index(drop=True)

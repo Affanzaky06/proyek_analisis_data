@@ -6,6 +6,7 @@ import pandas as pd
 import seaborn as sns
 import streamlit as st
 from pathlib import Path
+from io import BytesIO
 
 sns.set(style='whitegrid')
 
@@ -159,7 +160,12 @@ ax.set_xticks(range(0, 24))
 ax.set_ylim(0, pola_jam.max().max() * 1.2)
 ax.legend(title='Jenis hari', loc='upper left')
 sns.despine()
-st.pyplot(fig)
+buffer = BytesIO()
+fig.savefig(buffer, format="png", dpi=150, bbox_inches="tight")
+buffer.seek(0)
+
+st.image(buffer.getvalue(), caption="Tes grafik penyewaan per jam")
+plt.close(fig)
 
 st.info('**Insight (seluruh periode):** hari kerja memiliki dua puncak komuter pukul 08:00 dan 17:00, '
         'sedangkan akhir pekan & libur memiliki satu puncak landai sekitar pukul 13:00.')

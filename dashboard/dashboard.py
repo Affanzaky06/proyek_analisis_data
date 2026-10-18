@@ -6,7 +6,7 @@ import pandas as pd
 import seaborn as sns
 import streamlit as st
 from pathlib import Path
-from io import BytesIO
+
 
 sns.set(style='whitegrid')
 
@@ -123,6 +123,9 @@ st.subheader('Pertanyaan 1: Pola Penyewaan per Jam')
 st.write('Pada jam berapa permintaan sepeda mencapai puncak pada **hari kerja** dibandingkan '
          '**akhir pekan & libur**, dan berapa rata-rata penyewaan per jam pada jam puncak tersebut?')
 
+st.subheader("Tes grafik sederhana")
+st.line_chart([1, 3, 2, 5, 4])
+
 pilihan = st.selectbox('Tipe pengguna yang ditampilkan', list(PILIHAN_TIPE.keys()))
 kolom_tipe = PILIHAN_TIPE[pilihan]
 pola_jam = create_hourly_pattern_df(main_df, kolom_tipe)
@@ -160,12 +163,7 @@ ax.set_xticks(range(0, 24))
 ax.set_ylim(0, pola_jam.max().max() * 1.2)
 ax.legend(title='Jenis hari', loc='upper left')
 sns.despine()
-buffer = BytesIO()
-fig.savefig(buffer, format="png", dpi=150, bbox_inches="tight")
-buffer.seek(0)
-
-st.image(buffer.getvalue(), caption="Tes grafik penyewaan per jam")
-plt.close(fig)
+st.pyplot(fig)
 
 st.info('**Insight (seluruh periode):** hari kerja memiliki dua puncak komuter pukul 08:00 dan 17:00, '
         'sedangkan akhir pekan & libur memiliki satu puncak landai sekitar pukul 13:00.')

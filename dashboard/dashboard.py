@@ -6,6 +6,7 @@ import pandas as pd
 import seaborn as sns
 import streamlit as st
 from pathlib import Path
+from io import BytesIO
 
 
 sns.set(style='whitegrid')
@@ -123,8 +124,6 @@ st.subheader('Pertanyaan 1: Pola Penyewaan per Jam')
 st.write('Pada jam berapa permintaan sepeda mencapai puncak pada **hari kerja** dibandingkan '
          '**akhir pekan & libur**, dan berapa rata-rata penyewaan per jam pada jam puncak tersebut?')
 
-st.subheader("Tes grafik sederhana")
-st.line_chart([1, 3, 2, 5, 4])
 
 pilihan = st.selectbox('Tipe pengguna yang ditampilkan', list(PILIHAN_TIPE.keys()))
 kolom_tipe = PILIHAN_TIPE[pilihan]
@@ -163,7 +162,16 @@ ax.set_xticks(range(0, 24))
 ax.set_ylim(0, pola_jam.max().max() * 1.2)
 ax.legend(title='Jenis hari', loc='upper left')
 sns.despine()
-st.pyplot(fig)
+buffer = BytesIO()
+fig.savefig(
+    buffer,
+    format="png",
+    dpi=150,
+    bbox_inches="tight"
+)
+
+st.image(buffer.getvalue())
+plt.close(fig)
 
 st.info('**Insight (seluruh periode):** hari kerja memiliki dua puncak komuter pukul 08:00 dan 17:00, '
         'sedangkan akhir pekan & libur memiliki satu puncak landai sekitar pukul 13:00.')
@@ -224,7 +232,15 @@ else:
     axes[1].legend(title='Tipe pengguna', loc='upper center', bbox_to_anchor=(0.5, -0.12), ncol=2)
     sns.despine()
     plt.tight_layout()
-    st.pyplot(fig)
+    buffer = BytesIO()
+    fig.savefig(
+        buffer,
+        format="png",
+        dpi=150,
+        bbox_inches="tight"
+    )
+    st.image(buffer.getvalue())
+    plt.close(fig)
 
     st.info('**Insight (seluruh periode):** pengguna *casual* naik ±126% pada hari libur (607 → 1.371 per hari), '
             'sedangkan *registered* turun ±26% (3.978 → 2.959). Porsi *casual* naik dari 13,2% menjadi 31,7%.')

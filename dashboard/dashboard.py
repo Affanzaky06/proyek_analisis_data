@@ -6,6 +6,7 @@ import pandas as pd
 import seaborn as sns
 import streamlit as st
 from pathlib import Path
+from io import BytesIO
 
 
 sns.set(style='whitegrid')
@@ -160,10 +161,20 @@ ax.set_xticks(range(0, 24))
 ax.set_ylim(0, pola_jam.max().max() * 1.2)
 ax.legend(title='Jenis hari', loc='upper left')
 sns.despine()
-st.write("Tes apakah objek grafik berhasil dibuat:")
-st.write(type(fig))
+st.write("Jumlah axes:", len(fig.axes))
 
-st.pyplot(fig, clear_figure=False, use_container_width=True)
+try:
+    buffer = BytesIO()
+    fig.savefig(buffer, format="png", dpi=100)
+    png_data = buffer.getvalue()
+
+    st.write("Ukuran PNG:", len(png_data), "bytes")
+    st.write("Header PNG:", png_data[:8])
+
+    st.image(png_data, caption="Tes PNG Matplotlib")
+
+except Exception as e:
+    st.exception(e)
 
 st.info('**Insight (seluruh periode):** hari kerja memiliki dua puncak komuter pukul 08:00 dan 17:00, '
         'sedangkan akhir pekan & libur memiliki satu puncak landai sekitar pukul 13:00.')
